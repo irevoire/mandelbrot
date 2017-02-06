@@ -6,4 +6,4 @@ Une version séquentielle est fournie dans le fichier `mandel-seq.c`.
 
 Deux objectifs progressifs à ce TP :
 1. produire une version parallèle
-2. se soucier de l'équilibre d ela charge
+2. se soucier de l'équilibre de la charge
