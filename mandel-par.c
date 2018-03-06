@@ -24,11 +24,16 @@
 #define X_SIZE  2048		/* dimension image */
 #define Y_SIZE  1536
 #define FILENAME "mandel.ppm"	/* image resultat */
+#define PROC_NULL 0
 
 typedef struct {  
 	int x_size, y_size;		/* dimensions */
 	char *pixels;		/* matrice linearisee de pixels */
 } picture_t;
+
+int self;
+int procs;
+int rnbr, lnbr;
 
 static void 
 usage() 
@@ -150,16 +155,39 @@ main (int argc, char *argv[])
 	    x_size, y_size;		/* & dimensions de l'image */  
 	double x_min, x_max, y_min, y_max; /* bornes de la representation */
 	char *pathname;		/* fichier destination */
-	picture_t pict;
+	double start_time, end_time;
+	picture_t pictlocal, pictglobal;
+	MPI_Comm com;	/* communicateur */
+	MPI_Status status;
 
 	parse_argv(argc, argv, 
 			&n_iter, 
 			&x_min, &x_max, &y_min, &y_max, 
 			&x_size, &y_size, &pathname);
 
-	init_picture (& pict, x_size, y_size);
-	compute (& pict, n_iter, x_min, x_max, y_min, y_max);
-	save_picture (& pict, pathname);
+	com = MPI_COMM_WORLD;
+	MPI_Init(&argc, &argv);
+	MPI_Comm_size(com, &procs);
+	MPI_Comm_rank(com, &self);
+
+	(void)MPI_Wtime();
+	start_time = MPI_Wtime();
+
+	init_picture (&pictlocal, x_size, (y_size / procs));
+	init_picture (&pictglobal, x_size, y_size);
+
+	compute(&pictlocal, n_iter, x_min, x_max, y_max - ((y_max - y_min) / procs) * (self + 1), y_max - ((y_max - y_min) / procs) * self);
+
+	MPI_Gather(pictlocal.pixels, x_size * (y_size / procs), MPI_CHAR, pictglobal.pixels, x_size * (y_size / procs), MPI_CHAR, PROC_NULL, com);
+
+	end_time = MPI_Wtime();
+
+	if (self == PROC_NULL) {
+		save_picture (&pictglobal, pathname);
+		printf("Total compute time : %lf\n", (end_time - start_time));
+	}
+
+	MPI_Finalize();
 
 	exit(EXIT_SUCCESS);
 }
