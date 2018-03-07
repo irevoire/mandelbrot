@@ -2,7 +2,9 @@ CC := mpicc
 RUN := mpirun
 HOSTFILE := mpi_hosts
 
-EXE := mandel-par mandel-seq
+EXE := mandel-seq \
+	mandel-par \
+	mandel-par-charge
 
 .PHONY: all run clean
 
@@ -16,8 +18,11 @@ mandel-par: mandel-par.o mandel.o
 mandel-par.o: mandel-par.c
 	$(CC) $< -c
 
-run:
-	$(RUN) -np 208 --hostfile $(HOSTFILE) mandel-par -d 4096 3072 -n 4096
+mandel-par-charge: mandel-par-charge.o mandel.o
+	$(CC) $^ -o $@
+
+mandel-par-charge.o: mandel-par-charge.c
+	$(CC) $< -c
 
 ## Seq ####################
 
@@ -31,6 +36,11 @@ mandel-seq.o: mandel-seq.c
 
 mandel.o: mandel.c mandel.h
 	gcc $< -c
+
+## Misc ###################
+
+run:
+	$(RUN) -np 208 --hostfile $(HOSTFILE) mandel-par -d 4096 3072 -n 4096
 
 clean:
 	@rm -f $(EXE) *.o mandel.ppm
