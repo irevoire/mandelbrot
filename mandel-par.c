@@ -13,6 +13,8 @@
 #include "mandel.h"
 #include "mpi.h"
 
+#define PROC_NULL 0
+
 int 
 main (int argc, char *argv[]) 
 {

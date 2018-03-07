@@ -12,7 +12,6 @@
 #define X_SIZE  2048		/* dimension image */
 #define Y_SIZE  1536
 #define FILENAME "mandel.ppm"	/* image resultat */
-#define PROC_NULL 0
 
 typedef struct {  
 	int x_size, y_size;		/* dimensions */
