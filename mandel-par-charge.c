@@ -76,7 +76,7 @@ main(int argc, char * argv[])
 
 	init_picture (&final_pic, x_size, y_size);
 
-	unsigned nb_bands = procs * 2;
+	unsigned nb_bands = procs * 5;
 	unsigned current_band = 0;
 	unsigned tab_procs[procs];
 	double y_min_tmp;
@@ -126,7 +126,7 @@ main(int argc, char * argv[])
 				MPI_CHAR, MPI_ANY_SOURCE, FINISHED_JOB, com, &status);
 		printf("[M] A récupéré la bande %d...\n", tab_procs[status.MPI_SOURCE]);
 
-		memcpy(final_pic.pixels + (x_size * tab_procs[status.MPI_SOURCE] * pixel_size_bands),
+		memcpy(final_pic.pixels + (pixel_size_bands * x_size * (nb_bands - tab_procs[status.MPI_SOURCE] - 1)),
 				tmp_pic.pixels, x_size * pixel_size_bands);
 
 		y_min_tmp = y_min + real_size_bands * current_band;
@@ -147,7 +147,7 @@ main(int argc, char * argv[])
 		MPI_Recv(tmp_pic.pixels, x_size * pixel_size_bands,
 				MPI_CHAR, MPI_ANY_SOURCE, FINISHED_JOB, com, & status);
 
-		memcpy(final_pic.pixels + (tab_procs[status.MPI_SOURCE] * x_size * pixel_size_bands),
+		memcpy(final_pic.pixels + ((nb_bands - tab_procs[status.MPI_SOURCE] - 1) * x_size * pixel_size_bands),
 				tmp_pic.pixels, (x_size * pixel_size_bands));
 	}
 
