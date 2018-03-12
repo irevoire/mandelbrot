@@ -64,10 +64,12 @@ main (int argc, char *argv[])
 
 	if (self == PROC_NULL) {
 		save_picture (&pictglobal, pathname);
-		printf("Total compute time : %lf\n", (end_time - start_time));
+		fprintf(stderr, "Total compute time : %lf\n", (end_time - start_time));
 	}
 
 	MPI_Finalize();
+
+	printf ("%.3d %f\n", self, end_time - start_time);
 
 	exit(EXIT_SUCCESS);
 }
