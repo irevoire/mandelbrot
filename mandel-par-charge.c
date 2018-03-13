@@ -44,7 +44,6 @@ void slave(MPI_Comm com, MPI_Status status, const double real_size_bands, const 
 	int
 main(int argc, char * argv[])
 {
-	printf("je commence\n");
 	/* Mandelbrot */
 	picture_t final_pic,
 			  tmp_pic;
@@ -122,7 +121,6 @@ main(int argc, char * argv[])
 
 		/* On envoie le nouveau y_min au même processus */
 		MPI_Send(&y_min_tmp, 1, MPI_DOUBLE, status.MPI_SOURCE, NEW_JOB, com);
-		fprintf(stderr, "#");
 	}
 
 
