@@ -46,10 +46,10 @@ run-mandel-par-charge:
 	$(RUN) -np 208 --hostfile $(HOSTFILE) mandel-par-charge -d 4096 3072 -n 4096
 
 save-mandel-par: mandel-par
-	$(RUN) -np 208 --hostfile $(HOSTFILE) mandel-par -d 4096 3072 -n 4096 | sort -k 1 -n > $@.dat
+	$(RUN) -np 208 --hostfile $(HOSTFILE) mandel-par -d 8192 6144 -n 8192 | sort -k 1 -n > $@.dat
 
 save-mandel-par-charge: mandel-par-charge
-	$(RUN) -np 208 --hostfile $(HOSTFILE) mandel-par-charge -d 4096 3072 -n 4096 | sort -k 1 -n > $@.dat
+	$(RUN) -np 208 --hostfile $(HOSTFILE) mandel-par-charge -d 8192 6144 -n 8192 | sort -k 1 -n > $@.dat
 
 clean:
 	@rm -f $(EXE) *.o mandel.ppm
